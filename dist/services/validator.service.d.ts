@@ -1,9 +1,7 @@
-import Ajv2020 from 'ajv/dist/2020';
-import { TenantSchemaRepository } from '../repositories';
+import { Engine } from 'json-rules-engine';
 export declare class ValidatorService {
-    private ajv;
-    private validatorCache;
-    tenantSchemaRepository: TenantSchemaRepository;
+    private engine;
     constructor();
-    getAjv(): Ajv2020;
+    getEngine(): Engine;
+    runRules(facts: any): Promise<any[]>;
 }

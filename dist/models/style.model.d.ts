@@ -5,7 +5,7 @@ export declare class Style extends Entity {
     code: string;
     name: string;
     status: string;
-    custom: object;
+    data: object;
     created_at: string;
     updated_at: string;
     constructor(data?: Partial<Style>);

@@ -25,5 +25,5 @@ exports.DbDataSource = DbDataSource = tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [Object])
 ], DbDataSource);
 //This folder holds the configuration for connecting to your database.
-//  The fynd-plm.datasource.ts file tells LoopBack where your PostgreSQL server is and how to connect to it.
+//The fynd-plm.datasource.ts file tells LoopBack where your PostgreSQL server is and how to connect to it.
 //# sourceMappingURL=db.datasource.js.map

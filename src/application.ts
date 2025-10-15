@@ -9,6 +9,8 @@ import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {ValidatorService} from './services';
+import {GenericController} from './controllers';
+import {BomRepository} from './repositories';
 
 export {ApplicationConfig};
 
@@ -32,13 +34,19 @@ export class FyndPlmApiApplication extends BootMixin(
     // Bind our services
     this.service(ValidatorService);
 
+    // Bind our controllers
+    this.controller(GenericController);
+
+    // Bind our repositories
+    this.bind('repositories.BomRepository').toClass(BomRepository);
+
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
     this.bootOptions = {
       controllers: {
         // Customize ControllerBooter Conventions here
         dirs: ['controllers'],
-        extensions: ['.controller.js'],
+        extensions: ['.controller.ts'],
         nested: true,
       },
     };

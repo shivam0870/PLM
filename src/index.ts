@@ -1,4 +1,4 @@
-import {FyndPlmApiApplication} from './application.ts';
+import {FyndPlmApiApplication} from './application';
 import {ApplicationConfig} from '@loopback/core';
 
 export * from './application';

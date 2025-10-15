@@ -17,4 +17,5 @@ exports.StyleRepository = StyleRepository = tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [datasources_1.DbDataSource])
 ], StyleRepository);
 //Connects models to database 
+// TenantSchemaRepository - Loading schema from database
 //# sourceMappingURL=style.repository.js.map

@@ -1,78 +1,91 @@
-import {injectable, BindingScope} from '@loopback/core';
-import {repository} from '@loopback/repository';
-import Ajv2020, {KeywordCxt, ValidateFunction} from 'ajv/dist/2020';
-import addFormats from 'ajv-formats';
-import {TenantSchemaRepository} from '../repositories';
+import {Engine} from 'json-rules-engine';
 
-@injectable({scope: BindingScope.TRANSIENT})
 export class ValidatorService {
-  private ajv: Ajv2020;
-  private validatorCache = new Map<string, ValidateFunction>();
-
-  @repository(TenantSchemaRepository)
-  public tenantSchemaRepository: TenantSchemaRepository;
+  private engine: Engine;
 
   constructor() {
-    this.ajv = new Ajv2020({
-      allErrors: true,
-      useDefaults: true,
-      coerceTypes: 'array',
-    });
-    addFormats(this.ajv);
+    this.engine = new Engine();
 
-    // --- ADDING CUSTOM VALIDATION KEYWORDS ---
-
-    this.ajv.addKeyword({
-      keyword: 'hitValue',
-      errors: true,
-      validate: function (this: KeywordCxt, schema: any, data: number) {
-        const valid = data >= 1 && data <= 12;
-        if (!valid) {
-          (this as any).errors = [{keyword: 'hitValue', message: 'hit value must be between 1 and 12'}];
+    // Define rules for extensible models
+    this.engine.addRule({
+      conditions: {
+        all: [
+          {
+            fact: 'objectType',
+            operator: 'equal',
+            value: 'boms'
+          },
+          {
+            fact: 'data',
+            path: '$.cost',
+            operator: 'greaterThan',
+            value: 1000
+          }
+        ]
+      },
+      event: {
+        type: 'high-cost-bom',
+        params: {
+          message: 'BOM cost is high, triggering additional checks'
         }
-        return valid;
       }
     });
 
-    this.ajv.addKeyword({
-      keyword: 'nameValidation',
-      errors: true,
-      validate: function (this: KeywordCxt, schema: any, data: string) {
-        const valid = data.length >= 3 && data.length <= 50;
-        if (!valid) {
-          (this as any).errors = [{keyword: 'nameValidation', message: 'Name must be between 3 and 50 characters.'}];
+    this.engine.addRule({
+      conditions: {
+        all: [
+          {
+            fact: 'objectType',
+            operator: 'equal',
+            value: 'styles'
+          },
+          {
+            fact: 'data',
+            path: '$.hit',
+            operator: 'greaterThan',
+            value: 10
+          }
+        ]
+      },
+      event: {
+        type: 'high-hit-style',
+        params: {
+          message: 'Style hit is high, triggering additional actions'
         }
-        return valid;
       }
     });
 
-    this.ajv.addKeyword({
-      keyword: 'brandValidation',
-      errors: true,
-      validate: function (this: KeywordCxt, schema: any, data: string) {
-        const validBrands = ['Nike', 'Adidas', 'Puma', 'Fynd'];
-        const valid = validBrands.includes(data);
-        if (!valid) {
-          (this as any).errors = [{keyword: 'brandValidation', message: `Brand must be one of: ${validBrands.join(', ')}.`}];
+    this.engine.addRule({
+      conditions: {
+        all: [
+          {
+            fact: 'objectType',
+            operator: 'equal',
+            value: 'styles'
+          },
+          {
+            fact: 'data',
+            path: '$.brand',
+            operator: 'equal',
+            value: 'Nike'
+          }
+        ]
+      },
+      event: {
+        type: 'nike-brand',
+        params: {
+          message: 'Style is Nike brand, triggering additional validations'
         }
-        return valid;
-      }
-    });
-
-    this.ajv.addKeyword({
-      keyword: 'seasonValue',
-      errors: true,
-      validate: function (this: KeywordCxt, schema: any, data: string) {
-        const validSeasons = ['SS', 'FW', 'Spring', 'Summer', 'Fall', 'Winter'];
-        const valid = validSeasons.includes(data);
-        if (!valid) {
-          (this as any).errors = [{keyword: 'seasonValue', message: `Season must be one of: ${validSeasons.join(', ')}.`}];
-        }
-        return valid;
       }
     });
   }
-  getAjv(): Ajv2020 {
-    return this.ajv;
+
+  getEngine(): Engine {
+    return this.engine;
+  }
+
+  async runRules(facts: any): Promise<any[]> {
+    const events = await this.engine.run(facts);
+    return events.events;
   }
 }
