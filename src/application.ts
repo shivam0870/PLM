@@ -8,9 +8,12 @@ import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
+import {AggregationService} from './services/aggregation.service';
 import {ValidatorService} from './services';
 import {GenericController} from './controllers';
 import {BomRepository} from './repositories';
+import { CrudService } from './services/crud.service';
+import { EntityService } from './services/entity.service';
 
 export {ApplicationConfig};
 
@@ -20,6 +23,9 @@ export class FyndPlmApiApplication extends BootMixin(
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
+    // Bind the application instance
+    this.bind('services.Application').to(this);
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
@@ -33,6 +39,9 @@ export class FyndPlmApiApplication extends BootMixin(
 
     // Bind our services
     this.service(ValidatorService);
+    this.service(AggregationService);
+    this.service(CrudService);
+    this.service(EntityService);
 
     // Bind our controllers
     this.controller(GenericController);

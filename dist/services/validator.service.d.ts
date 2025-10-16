@@ -1,7 +1,9 @@
-import { Engine } from 'json-rules-engine';
+import { Application } from '@loopback/core';
 export declare class ValidatorService {
+    private app;
     private engine;
-    constructor();
-    getEngine(): Engine;
+    constructor(app: Application);
+    private addOperators;
+    private addRules;
     runRules(facts: any): Promise<any[]>;
 }

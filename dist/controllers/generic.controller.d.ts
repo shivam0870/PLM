@@ -1,12 +1,12 @@
-import { Application } from '@loopback/core';
 import { Entity, DataObject } from '@loopback/repository';
-import { ValidatorService } from '../services';
+import { AggregationService } from '../services/aggregation.service';
+import { CrudService } from '../services/crud.service';
+import { EntityService } from '../services/entity.service';
 export declare class GenericController {
-    private app;
-    protected validatorService: ValidatorService;
-    constructor(app: Application, validatorService: ValidatorService);
-    private getRepositoryName;
-    private generateCustomId;
+    protected aggregationService: AggregationService;
+    protected crudService: CrudService;
+    protected entityService: EntityService;
+    constructor(aggregationService: AggregationService, crudService: CrudService, entityService: EntityService);
     create(objectType: string, tenantId: string, data: DataObject<Entity>): Promise<Entity>;
     find(objectType: string, tenantId: string, limit?: number, offset?: number): Promise<Entity[]>;
     findById(objectType: string, id: string): Promise<Entity>;
