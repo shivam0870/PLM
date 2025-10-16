@@ -17,6 +17,7 @@ tslib_1.__decorate([
         postgresql: {
             columnName: 'id',
             dataType: 'uuid',
+            defaultFn: 'uuid_generate_v4()',
         },
     }),
     tslib_1.__metadata("design:type", String)

@@ -9,6 +9,7 @@ export class BrandLookup extends Entity {
     postgresql: {
       columnName: 'id',
       dataType: 'uuid',
+      defaultFn: 'uuid_generate_v4()',
     },
   })
   id: string;

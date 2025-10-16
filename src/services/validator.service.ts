@@ -30,7 +30,7 @@ export class ValidatorService {
         }
       }
     });
-
+//add the validatin here
     this.engine.addRule({
       conditions: {
         all: [
@@ -89,3 +89,10 @@ export class ValidatorService {
     return events.events;
   }
 }
+
+
+//Move all the validation rules to here in  one file no explicit validation should be there
+// only validation shoould be in terms of json-rules-engine
+
+
+//we need to add one more thing in the avoiding garbage attributes - 
